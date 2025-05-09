@@ -40,13 +40,25 @@ public class BitboardADT {
         return board;
     }
 
+    public void getByte(){
+        long temp = board;
+        for(int i = 0; i < 40; i++){
+            if(i%8 == 0){
+                System.out.println("--");
+            }
+            System.out.println(temp%2);
+            temp = temp/2;
+        }
+    }
+
 
 public static void main(String[] args) {
         BitboardADT board = new BitboardADT(12);
         long a = 8L;
         long b = 01L;
         long c = a^b;
-        System.out.println(board);
+        System.out.println(board.get());
+        board.getByte();
         System.out.println(b);
         System.out.println(c);
     }
