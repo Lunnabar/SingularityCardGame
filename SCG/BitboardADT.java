@@ -6,8 +6,8 @@ public class BitboardADT {
 
     private long board;
 
-    public BitboardADT(){
-        board = 0L;
+    public BitboardADT(long Long){
+        board = Long;
     }
 
     public long shift(long bits, int exponent){
@@ -36,13 +36,17 @@ public class BitboardADT {
         return row >= 0 && row < 5 && col >= 0 && col < 8;
     }
 
+    public long get(){
+        return board;
+    }
+
 
 public static void main(String[] args) {
-        BitboardADT board = new BitboardADT();
+        BitboardADT board = new BitboardADT(12);
         long a = 8L;
         long b = 01L;
         long c = a^b;
-        System.out.println(a);
+        System.out.println(board);
         System.out.println(b);
         System.out.println(c);
     }
