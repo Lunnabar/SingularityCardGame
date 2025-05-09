@@ -37,6 +37,17 @@ public class BitboardADT {
         return board;
     }
 
+    public void getByte(){
+        long temp = board;
+        for(int i = 0; i < 40; i++){
+            if(i%8 == 0){
+                System.out.println("--");
+            }
+            System.out.println(temp%2);
+            temp = temp/2;
+        }
+    }
+
 
     public static void main(String[] args) {
         BitboardADT board = new BitboardADT(12);
@@ -47,6 +58,8 @@ public class BitboardADT {
         System.out.println(board);
         System.out.println("b:" + b);
         System.out.println("c" + c);
+
+        board.getByte();
 
         System.out.println("\nBoard View!");
         viewBoard(board.get());
