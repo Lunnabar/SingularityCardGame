@@ -19,11 +19,15 @@ public class BitboardADT {
     }
 
     public void setPosition(int row, int col) {
-        board = board + shift(1, row*8 + col);
+        if(inBounds(row, col)){
+            board = board + shift(1, row*8 + col);
+        }
     }
 
     public void clearPosition(int row, int col) {
-        board = board - shift(1, row*8 + col);
+        if(inBounds(row, col)){
+            board = board - shift(1, row*8 + col);
+        }
     }
 
 
