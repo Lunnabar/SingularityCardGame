@@ -1,7 +1,20 @@
 package SCG; 
 
+import java.awt.geom.Rectangle2D;
 
-public class GameBoard {
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JFrame;
+import java.util.Random;
+import java.util.ArrayList;
+
+public class GameBoard extends JFrame{
     // Player 1 deck:           row 0, col 0
     // Player 1 resource zone:  row 1, col 0
     // Player 1 spell/trap:     row 0, col 2-6
