@@ -23,5 +23,4 @@ public class Card extends Rectangle2D.Double{
         setFrame(xCoord - diameter / 2, yCoord - diameter / 2, diameter, diameter * 1.414);
         board.repaint();
     }
-
 }
