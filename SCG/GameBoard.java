@@ -63,6 +63,20 @@ public class GameBoard extends JFrame{
 
 
 
+    public static final int   SQUARE_SIZE = 120;
+    public static final int   CARD_SIZE = SQUARE_SIZE / 2;
+    public static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY;
+    public static final Color BOUNDARY_COLOR = Color.BLACK;
+    public static final Color CARD_COLOR = Color.RED;
+    public static final int DISPLAY_WIDTH = SQUARE_SIZE * 8;
+    public static final int DISPLAY_LENGTH = SQUARE_SIZE * 5;
+
+
+    public BitboardADT board;
+    public Card playing_card;
+
+    public BufferedImage bf = new BufferedImage(DISPLAY_WIDTH, DISPLAY_LENGTH, 
+            BufferedImage.TYPE_INT_RGB);
 
     public static void main(String[] args) {
         BitboardADT board = new BitboardADT(124);
