@@ -71,10 +71,11 @@ public class GameBoard extends JFrame{
     public static final int DISPLAY_WIDTH = SQUARE_SIZE * 8;
     public static final int DISPLAY_LENGTH = SQUARE_SIZE * 5;
 
-
+    // Sets up board and the card in motion (only moving one card at a time)
     public BitboardADT board;
     public Card playing_card;
 
+    // Playing board render
     public BufferedImage bf = new BufferedImage(DISPLAY_WIDTH, DISPLAY_LENGTH, 
             BufferedImage.TYPE_INT_RGB);
 
