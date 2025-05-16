@@ -121,7 +121,7 @@ public class BitboardADT {
 
     public static void viewBoard(long boardValue) {
         // Start from the top row and go down
-        for (int row = 4; row >= 0; row--) {
+        for (int row = 0; row < 5; row++) {
             // For each column going left to right
             for (int col = 0; col < 8; col++) {
                 // Calculate the bit index for this row and column position
