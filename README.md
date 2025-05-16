@@ -13,7 +13,19 @@ Weâ€™re two students from Williams College who set out to design something thatâ
 
 Some Of Our Goals:
 
-Provide a visual digital version of the Singularity game board and logic
-Allow others to grow from on our implementation through sleek code and documentation
-Bring structure to an unstructured game while preserving creative flexibility
-Utilize bitboards to efficiently track card positions, player control, and tile-based interactions given complex zones/rules
+~ Provide a visual digital version of the Singularity game board and logic
+
+~ Allow others to build on our implementation through sleek code and documentation
+
+~ Bring structure to an unstructured game while preserving creative flexibility
+
+~ Utilize bitboards to efficiently track card positions, player control, and tile-based interactions given complex zones/rules
+
+
+The game structure is still a work in progress, to get a sense of the mechanics so far see the BitboardADT...
+
+Compile the Java file:
+<pre lang="markdown"> ```bash javac SCG/BitboardADT.java ``` </pre>
+
+Then Run the Program:
+<pre lang="markdown"> ```bash java SCG.BitboardADT ``` </pre>
