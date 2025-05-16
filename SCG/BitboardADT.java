@@ -60,11 +60,12 @@ public class BitboardADT {
 
 
             System.out.println("add, subtract, merge, intersect, or stop");
-            input = userInput.nextLine();
+            // Look for user input, non case sensitive for comparison 
+            input = userInput.nextLine().toLowerCase();
 
 
             if(input.equals("add")){
-                System.out.println("What column and row");
+                System.out.println("What column and row?");
                 input = userInput.nextLine();
                 int column = Integer.parseInt(input);
                 input = userInput.nextLine();
@@ -73,12 +74,12 @@ public class BitboardADT {
                     board.setPosition(row, column);
                 }
                 else{
-                    System.out.println("bad inputs");
+                    System.out.println("Inputs out of bounds.");
                 }
             }
 
             if(input.equals("subtract")){
-                System.out.println("What column and row");
+                System.out.println("What column and row?");
                 input = userInput.nextLine();
                 int column = Integer.parseInt(input);
                 input = userInput.nextLine();
@@ -87,19 +88,19 @@ public class BitboardADT {
                     board.clearPosition(row, column);
                 }
                 else{
-                    System.out.println("bad inputs");
+                    System.out.println("Inputs out of bounds.");
                 }
             }
 
             if(input.equals("merge")){
-                System.out.println("What bitboard");
+                System.out.println("What bitboard? (E.g. Long Value)");
                 input = userInput.nextLine();
                 long newBoard = Long.parseLong(input);
                 board = new BitboardADT(board.get() | newBoard);
             }
 
             if(input.equals("intersect")){
-                System.out.println("What bitboard");
+                System.out.println("What bitboard? (E.g. Long Value)");
                 input = userInput.nextLine();
                 long newBoard = Long.parseLong(input);
                 board = new BitboardADT(board.get() & newBoard);
