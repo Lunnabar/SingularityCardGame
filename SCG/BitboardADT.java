@@ -34,10 +34,12 @@ public class BitboardADT {
     }
 
     public long get(){
+        // Returns long
         return board;
     }
 
     public void getByte(){
+        // Returns visual representation
         long temp = board;
         for(int i = 0; i < 40; i++){
             if(i%8 == 0){
@@ -55,6 +57,8 @@ public class BitboardADT {
         Scanner userInput = new Scanner(System.in);
         String input = "";
         while(input.equals("stop") == false){
+
+            // gives board view
             System.out.println("\nBoard View!");
             viewBoard(board.get());
 
@@ -66,6 +70,7 @@ public class BitboardADT {
 
             if(input.equals("add")){
                 System.out.println("What column and row?");
+                // gets row and column and adds to board
                 input = userInput.nextLine();
                 int column = Integer.parseInt(input);
                 input = userInput.nextLine();
@@ -80,6 +85,7 @@ public class BitboardADT {
 
             if(input.equals("subtract")){
                 System.out.println("What column and row?");
+                // gets row and column and subtracts from board
                 input = userInput.nextLine();
                 int column = Integer.parseInt(input);
                 input = userInput.nextLine();
@@ -93,6 +99,7 @@ public class BitboardADT {
             }
 
             if(input.equals("merge")){
+                // Gets another board value and merges the two
                 System.out.println("What bitboard? (E.g. Long Value)");
                 input = userInput.nextLine();
                 long newBoard = Long.parseLong(input);
@@ -100,6 +107,7 @@ public class BitboardADT {
             }
 
             if(input.equals("intersect")){
+                // Gets another board value and gets the intersection of the two
                 System.out.println("What bitboard? (E.g. Long Value)");
                 input = userInput.nextLine();
                 long newBoard = Long.parseLong(input);
