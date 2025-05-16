@@ -49,9 +49,7 @@ public class BitboardADT {
             temp = temp/2;
         }
     }
-
-
-
+    
     public static void main(String[] args) {
         BitboardADT board = new BitboardADT(12);
 
