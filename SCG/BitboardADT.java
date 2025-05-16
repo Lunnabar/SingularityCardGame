@@ -1,6 +1,6 @@
 package SCG; 
 
-
+import java.util.Scanner;
 
 public class BitboardADT {
 
@@ -51,15 +51,60 @@ public class BitboardADT {
 
     public static void main(String[] args) {
         BitboardADT board = new BitboardADT(12);
-        long a = 8L;
-        long b = 01L;
-        long c = a^b;
-        System.out.println("Bitboard object:");
-        System.out.println(board);
-        System.out.println("b:" + b);
-        System.out.println("c" + c);
 
-        board.getByte();
+        Scanner userInput = new Scanner(System.in);
+        String input = "";
+        while(input.equals("stop") == false){
+            System.out.println("\nBoard View!");
+            viewBoard(board.get());
+
+
+            System.out.println("add, subtract, merge, intersect, or stop");
+            input = userInput.nextLine();
+
+
+            if(input.equals("add")){
+                System.out.println("What column and row");
+                input = userInput.nextLine();
+                int column = Integer.parseInt(input);
+                input = userInput.nextLine();
+                int row = Integer.parseInt(input);
+                if(board.inBounds(row, column)){
+                    board.setPosition(row, column);
+                }
+                else{
+                    System.out.println("bad inputs");
+                }
+            }
+
+            if(input.equals("subtract")){
+                System.out.println("What column and row");
+                input = userInput.nextLine();
+                int column = Integer.parseInt(input);
+                input = userInput.nextLine();
+                int row = Integer.parseInt(input);
+                if(board.inBounds(row, column)){
+                    board.clearPosition(row, column);
+                }
+                else{
+                    System.out.println("bad inputs");
+                }
+            }
+
+            if(input.equals("merge")){
+                System.out.println("What bitboard");
+                input = userInput.nextLine();
+                long newBoard = Long.parseLong(input);
+                board = new BitboardADT(board.get() | newBoard);
+            }
+
+            if(input.equals("intersect")){
+                System.out.println("What bitboard");
+                input = userInput.nextLine();
+                long newBoard = Long.parseLong(input);
+                board = new BitboardADT(board.get() & newBoard);
+            }
+        }
 
         System.out.println("\nBoard View!");
         viewBoard(board.get());
