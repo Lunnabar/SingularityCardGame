@@ -51,6 +51,7 @@ public class BitboardADT {
     }
 
 
+
     public static void main(String[] args) {
         BitboardADT board = new BitboardADT(12);
 
@@ -114,9 +115,6 @@ public class BitboardADT {
                 board = new BitboardADT(board.get() & newBoard);
             }
         }
-
-        System.out.println("\nBoard View!");
-        viewBoard(board.get());
     }
 
     public static void viewBoard(long boardValue) {
