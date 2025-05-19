@@ -1,18 +1,11 @@
 package SCG; 
 
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-
-import javax.swing.JFrame;
-import java.util.Random;
-import java.util.ArrayList;
+import javax.swing.*;
+import java.util.*;
 
 public class GameBoard extends JFrame{
     // Player 1 deck:           row 0, col 0
@@ -76,10 +69,14 @@ public class GameBoard extends JFrame{
     public User Player1;
     public User Player2;
 
-    // Playing board render
+    // Playing board render and mapping
     public BufferedImage bf = new BufferedImage(DISPLAY_WIDTH, DISPLAY_LENGTH, BufferedImage.TYPE_INT_RGB);
+    private final Map<String, ArrayList<CardSquare>> boardZones = new HashMap<>();
 
     public GameBoard() {        
+        setTitle("Welcome to the Singularity Game Board");
+        setSize(DISPLAY_WIDTH, DISPLAY_LENGTH);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Initialize user objects
         this.Player1 = new User();
@@ -103,10 +100,9 @@ public class GameBoard extends JFrame{
         CardMouseListener listener = new CardMouseListener();
         addMouseListener(listener);
         addMouseMotionListener(listener);
-        
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(board.size() * SQUARE_SIZE, SQUARE_SIZE);
+
         setVisible(true);
+        
     }
 
     public boolean gameIsOver(User current_player) {
