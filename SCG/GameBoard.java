@@ -42,7 +42,7 @@ public class GameBoard extends JFrame{
     private BitboardADT Player1_SpellTrap =     new BitboardADT(4+8+16+32+64);
     private BitboardADT Player1_Monster =       new BitboardADT((4+8+16+32+64)*256);
     private BitboardADT Player1_Graveyard =     new BitboardADT(128);
-    private BitboardADT Player1_Banishmemt =    new BitboardADT(128*256);
+    private BitboardADT Player1_Banishment =    new BitboardADT(128*256);
 
     private BitboardADT Poker_Deck =            new BitboardADT(256*256);
     private BitboardADT Poker_Zone =            new BitboardADT(2 + 256*2 + 256*256*2 + 256*256*256*2 + 256*256*256*256*2);
@@ -59,7 +59,7 @@ public class GameBoard extends JFrame{
     private BitboardADT Player2_SpellTrap =     new BitboardADT(256*256*256*256*(4+8+16+32+64));
     private BitboardADT Player2_Monster =       new BitboardADT(256*256*256*(4+8+16+32+64));
     private BitboardADT Player2_Graveyard =     new BitboardADT(256*256*256*256*128);
-    private BitboardADT Player2_Banishmemt =    new BitboardADT(256*256*128*256);
+    private BitboardADT Player2_Banishment =    new BitboardADT(256*256*128*256);
 
 
 
@@ -85,24 +85,27 @@ public class GameBoard extends JFrame{
 
     public GameBoard() {        
 
+        // Initialize user objects
+        this.Player1 = new User();
+        this.Player2 = new User();
+
         this.board = new BitboardADT(0);
         this.Player1.Player_Deck = Player1_Deck;
         this.Player1.Resource = Player1_Resource;
         this.Player1.SpellTrap = Player1_SpellTrap;
         this.Player1.Monster = Player1_Monster;
         this.Player1.Graveyard = Player1_Graveyard;
-        this.Player1.Banishment = Player1_Banishmemt;
+        this.Player1.Banishment = Player1_Banishment;
 
         this.Player2.Player_Deck = Player2_Deck;
         this.Player2.Resource = Player2_Resource;
         this.Player2.SpellTrap = Player2_SpellTrap;
         this.Player2.Monster = Player2_Monster;
         this.Player2.Graveyard = Player2_Graveyard;
-        this.Player2.Banishment = Player2_Banishmemt;
+        this.Player2.Banishment = Player2_Banishment;
 
 
-
-        CoinMouseListener listener = new CoinMouseListener();
+        CardMouseListener listener = new CardMouseListener();
         addMouseListener(listener);
         addMouseMotionListener(listener);
         
@@ -113,26 +116,24 @@ public class GameBoard extends JFrame{
 
     public boolean gameIsOver(User current_player) {
         
-        boolean endGame = true;
-        if(current_player.LifePoints > 0){
-            endGame = false;
-        }
-        if(current_player.PokerChips > 0){
-            endGame = false;
-        }
-        int index = 0;
-        long curent_deck = current_player.Player_Deck.get();
-        while(current_player > 0){
-        }
-        
-
-        return endGame;
+    // Game is over if the player has no life points
+    if (current_player.LifePoints <= 0) {
+        return true;
     }
 
+    // Game is over if the player has no poker chips
+    if (current_player.PokerChips <= 0) {
+        return true;
+    }
 
+    // Game is over if the player's deck is empty, check if the bitboard spot is active
+    if (current_player.Player_Deck.get() == 0L) {
+        return true;
+    }
 
-
-
+    // Otherwise, the game is not over
+    return false;
+}
 
     /**
      * An inner class to respond to mouse events.
@@ -264,9 +265,9 @@ private class CardMouseListener implements MouseListener, MouseMotionListener{
      * plays the game.
     */
     public static void main(String[] args) {
-        GameBoard f = new GameBoard (12, 5);
+        GameBoard f = new GameBoard;
     }
 
-}
+    }
 }
 
