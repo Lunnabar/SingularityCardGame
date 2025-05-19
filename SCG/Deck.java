@@ -22,6 +22,10 @@ public class Deck extends Rectangle2D.Double {
         this.width = width;
     }
 
+    public boolean isDeck(){
+    	return true;
+    }
+
     public boolean isEmpty() {
         return deck.size() != 0;
     }
