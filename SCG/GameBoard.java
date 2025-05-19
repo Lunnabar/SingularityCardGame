@@ -105,6 +105,10 @@ public class GameBoard extends JFrame{
         
     }
 
+    private void initZones(){
+        
+    } 
+
     public boolean gameIsOver(User current_player) {
         // Game is over if the player has no life points
         if (current_player.LifePoints <= 0) {
