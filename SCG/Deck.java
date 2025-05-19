@@ -9,14 +9,14 @@ import java.awt.geom.Rectangle2D;
 // Creating decks
 
 
-public class Deck extends Rectangle2D.Double {
+public class Deck extends BoardSquare {
 	public ArrayList<Card> deck = new ArrayList<Card>();
 	private int index;
 	private int width;
 
 // Init
 	public Deck(int index, int width) {
-    	super((index%8) * width, (index/8)*width, width, width);
+    	super(index, width);
     	deck = new ArrayList<Card>();
         this.index = index;
         this.width = width;
@@ -34,12 +34,12 @@ public class Deck extends Rectangle2D.Double {
     }
 
     // moves card into the deck
-    public void setCard(Card play) {
+    @Override public void setCard(Card play) {
         deck.add(play);
     }
 
     // draws a card from the deck
-    public Card release() {
+    @Override public Card release() {
     	Random rand = new Random();
     	int index = rand.nextInt(deck.size());
         Card play = deck.get(index);

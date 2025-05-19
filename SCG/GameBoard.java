@@ -95,7 +95,6 @@ public class GameBoard extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         initSquares();
-        labeledZones();
 
         CardMouseListener listener = new CardMouseListener();
         addMouseListener(listener);
@@ -106,7 +105,17 @@ public class GameBoard extends JFrame{
 
     private void initSquares() {
         for (int i = 0; i < 40; i++) {
-            squares.add(new BoardSquare(i, SQUARE_SIZE));
+            if(i == 0 || i == 7 || i == 15 || i == 8 || i == 16 || i == 18 || i == 22 || i == 32 || i == 24 || i == 31 || i == 39){
+                Deck deck = new Deck(i, SQUARE_SIZE);
+                for(int j = 0; j < 75; j++){
+                    Card card = new Card(this, CARD_SIZE);
+                    deck.setCard(card);
+                }
+                squares.add(deck);
+            }
+            else{
+                squares.add(new BoardSquare(i, SQUARE_SIZE));
+            }
         }
 
         // Lets start by having a card on Player1's Deck that can be moved
@@ -127,33 +136,6 @@ public class GameBoard extends JFrame{
         return zone;
     }
 
-    // Making it clear where zones are and color coding them
-    private void labeledZones() {
-        // Player 1 Zones
-        boardZones.put("Player1_Deck", setZone(Arrays.asList(0), Color.RED));           // row 0, col 0
-        boardZones.put("Player1_Resource", setZone(Arrays.asList(8), Color.ORANGE));    // row 1, col 0
-        boardZones.put("Player1_SpellTrap", setZone(Arrays.asList(2, 3, 4, 5, 6), Color.YELLOW)); // row 0, col 2-6
-        boardZones.put("Player1_Monster", setZone(Arrays.asList(10, 11, 12, 13, 14), Color.GREEN)); // row 1, col 2-6
-        boardZones.put("Player1_Graveyard", setZone(Arrays.asList(7), Color.DARK_GRAY)); // row 0, col 7
-        boardZones.put("Player1_Banishment", setZone(Arrays.asList(15), Color.LIGHT_GRAY)); // row 1, col 7
-
-        // Poker, Uno, Monopoly Community Chest, and Extras
-        boardZones.put("Poker_Deck", setZone(Arrays.asList(16), Color.BLUE)); // row 2, col 0
-        boardZones.put("Poker_Zone", setZone(Arrays.asList(1, 9, 17, 25, 33), Color.CYAN)); // col 1, rows 0–4
-
-        boardZones.put("Uno_Deck", setZone(Arrays.asList(18), Color.MAGENTA)); // row 2, col 2
-        boardZones.put("ExtraMonster", setZone(Arrays.asList(19, 21), Color.PINK)); // row 2, col 3 & 5
-        boardZones.put("Uno_Zone", setZone(Arrays.asList(20), Color.LIGHT_GRAY)); // row 2, col 4
-        boardZones.put("CommunityChest", setZone(Arrays.asList(22), Color.ORANGE)); // row 2, col 6
-
-        // Player 2 Zones
-        boardZones.put("Player2_Deck", setZone(Arrays.asList(32), Color.RED));           // row 4, col 0
-        boardZones.put("Player2_Resource", setZone(Arrays.asList(24), Color.ORANGE));    // row 3, col 0
-        boardZones.put("Player2_SpellTrap", setZone(Arrays.asList(34, 35, 36, 37, 38), Color.YELLOW)); // row 4, col 2-6
-        boardZones.put("Player2_Monster", setZone(Arrays.asList(26, 27, 28, 29, 30), Color.GREEN)); // row 3, col 2-6
-        boardZones.put("Player2_Graveyard", setZone(Arrays.asList(39), Color.DARK_GRAY)); // row 4, col 7
-        boardZones.put("Player2_Banishment", setZone(Arrays.asList(31), Color.LIGHT_GRAY)); // row 3, col 7
-    }
     
     private int getCardSquareIndex(int x, int y) {
         for (int i = 0; i < squares.size(); i++) {
@@ -232,6 +214,34 @@ public class GameBoard extends JFrame{
         // Clear background
         g2.setColor(BACKGROUND_COLOR);
         g2.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_LENGTH);
+
+
+        // Making it clear where zones are and color coding them
+        // Player 1 Zones
+        boardZones.put("Player1_Deck", setZone(Arrays.asList(0), Color.RED));           // row 0, col 0
+        boardZones.put("Player1_Resource", setZone(Arrays.asList(8), Color.ORANGE));    // row 1, col 0
+        boardZones.put("Player1_SpellTrap", setZone(Arrays.asList(2, 3, 4, 5, 6), Color.YELLOW)); // row 0, col 2-6
+        boardZones.put("Player1_Monster", setZone(Arrays.asList(10, 11, 12, 13, 14), Color.GREEN)); // row 1, col 2-6
+        boardZones.put("Player1_Graveyard", setZone(Arrays.asList(7), Color.DARK_GRAY)); // row 0, col 7
+        boardZones.put("Player1_Banishment", setZone(Arrays.asList(15), Color.LIGHT_GRAY)); // row 1, col 7
+
+        // Poker, Uno, Monopoly Community Chest, and Extras
+        boardZones.put("Poker_Deck", setZone(Arrays.asList(16), Color.BLUE)); // row 2, col 0
+        boardZones.put("Poker_Zone", setZone(Arrays.asList(1, 9, 17, 25, 33), Color.CYAN)); // col 1, rows 0–4
+
+        boardZones.put("Uno_Deck", setZone(Arrays.asList(18), Color.MAGENTA)); // row 2, col 2
+        boardZones.put("ExtraMonster", setZone(Arrays.asList(19, 21), Color.PINK)); // row 2, col 3 & 5
+        boardZones.put("Uno_Zone", setZone(Arrays.asList(20), Color.LIGHT_GRAY)); // row 2, col 4
+        boardZones.put("CommunityChest", setZone(Arrays.asList(22), Color.ORANGE)); // row 2, col 6
+
+        // Player 2 Zones
+        boardZones.put("Player2_Deck", setZone(Arrays.asList(32), Color.RED));           // row 4, col 0
+        boardZones.put("Player2_Resource", setZone(Arrays.asList(24), Color.ORANGE));    // row 3, col 0
+        boardZones.put("Player2_SpellTrap", setZone(Arrays.asList(34, 35, 36, 37, 38), Color.YELLOW)); // row 4, col 2-6
+        boardZones.put("Player2_Monster", setZone(Arrays.asList(26, 27, 28, 29, 30), Color.GREEN)); // row 3, col 2-6
+        boardZones.put("Player2_Graveyard", setZone(Arrays.asList(39), Color.DARK_GRAY)); // row 4, col 7
+        boardZones.put("Player2_Banishment", setZone(Arrays.asList(31), Color.LIGHT_GRAY)); // row 3, col 7
+
 
         // Draw squares
         for (BoardSquare s : squares) {
