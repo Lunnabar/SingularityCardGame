@@ -11,7 +11,7 @@ public class BoardSquare extends Rectangle2D.Double {
 	private int width;
 
 // Init
-	public CardSquare(int index, int width) {
+	public BoardSquare(int index, int width) {
     	super((index%8) * width, (index/8)*width, width, width);
     	card = null;
         this.index = index;

@@ -29,7 +29,7 @@ public class Hand extends Rectangle2D.Double {
     	Scanner userInput = new Scanner(System.in);
     	System.out.println("\nWhich card to play?");
     	int card_number = Integer.parseInt(userInput.nextLine());
-    	Card play = hand.get(card_number);
+    	Card play = hand.get(card_number%hand.size());
     	hand.remove(card_number);
     	super(0, 0, 8*width, width);
         int stretch = width;
