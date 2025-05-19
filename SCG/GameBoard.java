@@ -62,9 +62,6 @@ public class GameBoard extends JFrame{
     private BitboardADT Player2_Banishment =    new BitboardADT(256*256*128*256);
 
 
-
-
-
     public static final int   SQUARE_SIZE = 120;
     public static final int   CARD_SIZE = SQUARE_SIZE / 2;
     public static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY;
@@ -80,16 +77,15 @@ public class GameBoard extends JFrame{
     public User Player2;
 
     // Playing board render
-    public BufferedImage bf = new BufferedImage(DISPLAY_WIDTH, DISPLAY_LENGTH, 
-            BufferedImage.TYPE_INT_RGB);
+    public BufferedImage bf = new BufferedImage(DISPLAY_WIDTH, DISPLAY_LENGTH, BufferedImage.TYPE_INT_RGB);
 
     public GameBoard() {        
 
         // Initialize user objects
         this.Player1 = new User();
         this.Player2 = new User();
-
         this.board = new BitboardADT(0);
+
         this.Player1.Player_Deck = Player1_Deck;
         this.Player1.Resource = Player1_Resource;
         this.Player1.SpellTrap = Player1_SpellTrap;
@@ -104,7 +100,6 @@ public class GameBoard extends JFrame{
         this.Player2.Graveyard = Player2_Graveyard;
         this.Player2.Banishment = Player2_Banishment;
 
-
         CardMouseListener listener = new CardMouseListener();
         addMouseListener(listener);
         addMouseMotionListener(listener);
@@ -115,41 +110,30 @@ public class GameBoard extends JFrame{
     }
 
     public boolean gameIsOver(User current_player) {
-        
-    // Game is over if the player has no life points
-    if (current_player.LifePoints <= 0) {
-        return true;
+        // Game is over if the player has no life points
+        if (current_player.LifePoints <= 0) {
+            return true;
+        }
+
+        // Game is over if the player has no poker chips
+        if (current_player.PokerChips <= 0) {
+            return true;
+        }
+
+        // Game is over if the player's deck is empty, check if the bitboard spot is active
+        if (current_player.Player_Deck.get() == 0L) {
+            return true;
+        }
+
+        // Otherwise, the game is not over
+        return false;
     }
 
-    // Game is over if the player has no poker chips
-    if (current_player.PokerChips <= 0) {
-        return true;
-    }
-
-    // Game is over if the player's deck is empty, check if the bitboard spot is active
-    if (current_player.Player_Deck.get() == 0L) {
-        return true;
-    }
-
-    // Otherwise, the game is not over
-    return false;
-}
-
-    /**
-     * An inner class to respond to mouse events.
-     */
-private class CardMouseListener implements MouseListener, MouseMotionListener{
+    // Class to respond to mouse events
+    private class CardMouseListener implements MouseListener, MouseMotionListener{
         
         private int origin; // the index of the square when a Card is picked up
         
-        /**
-         * Method mousePressed is called when the mouse is
-         * clicked.
-         * 
-         * For this application, pressing the mouse button
-         * picks up a Card if the cursor is on a Card, and
-         * that Card is dragged until the mouse is released.
-         */
         public void mousePressed(MouseEvent event) {
             int newX = event.getX();
             int newY = event.getY();
@@ -158,18 +142,13 @@ private class CardMouseListener implements MouseListener, MouseMotionListener{
                 int squareIndex = getCardSquareIndex(newX, newY);
                 playing_card = board.get(squareIndex).release();
                 playing_card.moveTo(newX, newY);
-                origin = squareIndex;
-                
-            } else {
+                origin = squareIndex;   
+            } 
+            else {
                 playing_card = null;
             }
         }
 
-        
-        /**
-         * Determines if an x, y location contains a Card.
-         * @return true if a Card is at location x, y, false otherwise
-         */
         private boolean clickedOnCard(int x, int y) {
             return board.get(getCardSquareIndex(x,y)).isOccupied(); 
         }
@@ -178,38 +157,8 @@ private class CardMouseListener implements MouseListener, MouseMotionListener{
             return board.get(getCardSquareIndex(x,y)).isDeck(); 
         }
 
-        /**
-         * Returns true if we are currently moving a Card and
-         * the x, y location represents a valid location on the Card
-         * board to drop that Card based on the contents of the board
-         * and the rules of the game.
-         * @return true if we are moving a Card and this is a valid location to drop it
-         */
         private boolean isValidCardDrop(int x, int y) {
-            // 🟢TODO: fill in code here and replace the line below
-            // Hints: It may be helpful to create some helper methods to support this method
-            int unJumpable = -1;
-
-            for(int i = 0; i < origin; i++){
-                if(board.get(i).isOccupied()){
-                    unJumpable = i;
-                }
-            }
-
-            int currentSquare = getCardSquareIndex(x,y);
-
-            if(currentSquare == -1){
-                return false;
-            }
-            else if(board.get(currentSquare).isOccupied()){
-                    return false;
-            }
-            else if(currentSquare > unJumpable && currentSquare < origin){
-                return true;
-            }
-            else{
-                return false;
-            }
+           // NEEDS TO BE UPDATED TO DETERMINE IF IN PLAYERS AREA
         }
         
         /**
@@ -229,19 +178,12 @@ private class CardMouseListener implements MouseListener, MouseMotionListener{
             if (isValidCardDrop(newX, newY)) {
                 int squareIndex = getCardSquareIndex(newX, newY);
                 board.get(squareIndex).setCard(playing_card);
+            }
 
-            // Give up the Card, if any, that was
-            // dragged; it has now been returned to
-            // some square.
+            // Give up the Card, if any, that was dragged; has been moved to some square
             playing_card = null;
         }
-    }
 
-
-        /**
-         * dragging a Card
-         * @post the selected Card, if there is one, is moved
-         */
         public void mouseDragged(MouseEvent event) {
             if (playing_card != null){
                 playing_card.moveTo(event.getX(), event.getY());
@@ -249,28 +191,16 @@ private class CardMouseListener implements MouseListener, MouseMotionListener{
             repaint();
         }
 
-        /**
-         * These methods are required by the interfaces.
-         * For this program, they do nothing.
-         */
+        
+        // Methods are required by the interfaces
         public void mouseClicked(MouseEvent event) {}
         public void mouseEntered(MouseEvent event) {}
         public void mouseExited(MouseEvent event) {}
         public void mouseMoved(MouseEvent event) {}
     
 
-    /**
-     * The main method simply creates GameBoard,
-     * initializes it, adds the mouse listeners, and 
-     * plays the game.
-    */
     public static void main(String[] args) {
-<<<<<<< HEAD
-        GameBoard f = new GameBoard;
-=======
->>>>>>> d781ceb7abcfeb75ace9adfd60d1c259c10f8cd2
-    }
-
+        GameBoard f = new GameBoard();
     }
 }
 
