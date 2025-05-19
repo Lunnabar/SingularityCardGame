@@ -1,11 +1,21 @@
-package SCG; 
+package SCG;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import javax.swing.*;
-import java.util.*;
+
+import javax.swing.JFrame;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
 
 public class GameBoard extends JFrame{
     // Player 1 deck:           row 0, col 0
@@ -92,113 +102,118 @@ public class GameBoard extends JFrame{
         addMouseMotionListener(listener);
 
         setVisible(true);
+    }
 
-        private void initSquares() {
-            for (int i = 0; i < 40; i++) {
-                squares.add(new BoardSquare(i, SQUARE_SIZE));
+    private void initSquares() {
+        for (int i = 0; i < 40; i++) {
+            squares.add(new BoardSquare(i, SQUARE_SIZE));
+        }
+
+        // Lets start by having a card on Player1's Deck that can be moved
+        Card sampleCard = new Card();
+        squares.get(0).setCard(sampleCard);
+    }
+
+    // Helper method to create zone lists where index is and apply color
+    private ArrayList<BoardSquare> setZone(List<Integer> indices, Color color) {
+        ArrayList<BoardSquare> zone = new ArrayList<>();
+        for (int index : indices) {
+            BoardSquare square = squares.get(index);
+            square.setZoneColor(color);
+            zone.add(square);
+        }
+        return zone;
+    }
+
+    // Making it clear where zones are and color coding them
+    private void labeledZones() {
+        // Player 1 Zones
+        boardZones.put("Player1_Deck", setZone(Arrays.asList(0), Color.RED));           // row 0, col 0
+        boardZones.put("Player1_Resource", setZone(Arrays.asList(8), Color.ORANGE));    // row 1, col 0
+        boardZones.put("Player1_SpellTrap", setZone(Arrays.asList(2, 3, 4, 5, 6), Color.YELLOW)); // row 0, col 2-6
+        boardZones.put("Player1_Monster", setZone(Arrays.asList(10, 11, 12, 13, 14), Color.GREEN)); // row 1, col 2-6
+        boardZones.put("Player1_Graveyard", setZone(Arrays.asList(7), Color.DARK_GRAY)); // row 0, col 7
+        boardZones.put("Player1_Banishment", setZone(Arrays.asList(15), Color.LIGHT_GRAY)); // row 1, col 7
+
+        // Poker, Uno, Monopoly Community Chest, and Extras
+        boardZones.put("Poker_Deck", setZone(Arrays.asList(16), Color.BLUE)); // row 2, col 0
+        boardZones.put("Poker_Zone", setZone(Arrays.asList(1, 9, 17, 25, 33), Color.CYAN)); // col 1, rows 0–4
+
+        boardZones.put("Uno_Deck", setZone(Arrays.asList(18), Color.MAGENTA)); // row 2, col 2
+        boardZones.put("ExtraMonster", setZone(Arrays.asList(19, 21), Color.PINK)); // row 2, col 3 & 5
+        boardZones.put("Uno_Zone", setZone(Arrays.asList(20), Color.LIGHT_GRAY)); // row 2, col 4
+        boardZones.put("CommunityChest", setZone(Arrays.asList(22), Color.ORANGE)); // row 2, col 6
+
+        // Player 2 Zones
+        boardZones.put("Player2_Deck", setZone(Arrays.asList(32), Color.RED));           // row 4, col 0
+        boardZones.put("Player2_Resource", setZone(Arrays.asList(24), Color.ORANGE));    // row 3, col 0
+        boardZones.put("Player2_SpellTrap", setZone(Arrays.asList(34, 35, 36, 37, 38), Color.YELLOW)); // row 4, col 2-6
+        boardZones.put("Player2_Monster", setZone(Arrays.asList(26, 27, 28, 29, 30), Color.GREEN)); // row 3, col 2-6
+        boardZones.put("Player2_Graveyard", setZone(Arrays.asList(39), Color.DARK_GRAY)); // row 4, col 7
+        boardZones.put("Player2_Banishment", setZone(Arrays.asList(31), Color.LIGHT_GRAY)); // row 3, col 7
+    }
+    
+    private int getCardSquareIndex(int x, int y) {
+        for (int i = 0; i < squares.size(); i++) {
+            if (squares.get(i).contains(x,y)) {
+                return i;
             }
-
-            // Lets start by having a card on Player1's Deck that can be moved
-            Card sampleCard = new Card();
-            squares.get(0).setCard(sampleCard);
         }
+        return -1;
+    }
 
-        private void labeledZones() {
-
-            // For Player 1
-            boardZones.put("Player1_Deck", new ArrayList<>());
-            boardZones.get("Player1_Deck").add(squares.get(0));
-
-
-            // For Player 2
-            boardZones.put("Player2_Deck", new ArrayList<>());
-            boardZones.get("Player2_Deck").add(squares.get(33));
-
-           
-        }
-
-        // Initialize user objects
-        this.Player1 = new User();
-        this.Player2 = new User();
-        this.board = new BitboardADT(0);
-
-        this.Player1.Player_Deck = Player1_Deck;
-        this.Player1.Resource = Player1_Resource;
-        this.Player1.SpellTrap = Player1_SpellTrap;
-        this.Player1.Monster = Player1_Monster;
-        this.Player1.Graveyard = Player1_Graveyard;
-        this.Player1.Banishment = Player1_Banishment;
-
-        this.Player2.Player_Deck = Player2_Deck;
-        this.Player2.Resource = Player2_Resource;
-        this.Player2.SpellTrap = Player2_SpellTrap;
-        this.Player2.Monster = Player2_Monster;
-        this.Player2.Graveyard = Player2_Graveyard;
-        this.Player2.Banishment = Player2_Banishment;
-
-
-        private int getCardSquareIndex(int x, int y) {
-            for (int i = 0; i < squares.size(), i++) {
-                if (squares.get(i).contains(x,y)) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        private boolean isValidCardDrop(int x, int y) {
-           int index = getCardSquareIndex(x,y)
-           if (index == -1){
+    private boolean isValidCardDrop(int x, int y) {
+        int index = getCardSquareIndex(x, y);
+        if (index == -1){
             return false;
-           }
-           return !squares.get(index).isOccupied();
         }
+        return !squares.get(index).isOccupied();
+    }
 
-        // Class to respond to mouse events
-        private class CardMouseListener implements MouseListener, MouseMotionListener {
-        
-            public void mousePressed(MouseEvent event) {
-                int x = event.getX();
-                int y = event.getY();
-                int index = getCardSquareIndex(x, y);
-                if (index != -1 && squares.get(index).isOccupied()) {
-                    playingCard = squares.get(index).release();
-                    originIndex = index;
-                    playingCard.moveTo(x, y);
-                }
-                else {
-                    playingCard = null;
-                    originIndex = -1;
-                }
-                repaint();
+    // Class to respond to mouse events
+    private class CardMouseListener implements MouseListener, MouseMotionListener {
+
+        public void mousePressed(MouseEvent event) {
+            int x = event.getX();
+            int y = event.getY();
+            int index = getCardSquareIndex(x, y);
+            if (index != -1 && squares.get(index).isOccupied()) {
+                playingCard = squares.get(index).release();
+                originIndex = index;
+                playingCard.moveTo(x, y);
             }
-
-            public void mouseReleased(MouseEvent event) {
-                if (playingCard == null){
-                    return;
-                }
-
-                int x = event.getX();
-                int y = event.getY();
-                if (isValidCardDrop(x, y)) {
-                    int index = getCardSquareIndex(x, y);
-                    squares.get(index).setCard(playingCard);
-                }
-                else if (originIndex != -1) {
-                    // Return card to the original square
-                    squares.get(originIndex).setCard(playingCard);
-                }
+            else {
                 playingCard = null;
                 originIndex = -1;
-                repaint();
+            }
+            repaint();
+        }
+
+        public void mouseReleased(MouseEvent event) {
+            if (playingCard == null){
+                return;
             }
 
-            public void mouseDragged(MouseEvent event) {
-                if (playingCard != null){
-                    playingCard.moveTo(event.getX(), event.getY());
-                }
-                repaint();
+            int x = event.getX();
+            int y = event.getY();
+            if (isValidCardDrop(x, y)) {
+                int index = getCardSquareIndex(x, y);
+                squares.get(index).setCard(playingCard);
             }
+            else if (originIndex != -1) {
+                // Return card to the original square
+                squares.get(originIndex).setCard(playingCard);
+            }
+            playingCard = null;
+            originIndex = -1;
+            repaint();
+        }
+
+        public void mouseDragged(MouseEvent event) {
+            if (playingCard != null){
+                playingCard.moveTo(event.getX(), event.getY());
+            }
+            repaint();
         }
 
         // Methods are required by the interfaces
@@ -226,8 +241,8 @@ public class GameBoard extends JFrame{
         }
 
         // Draw dragged card on top
-        if (playing_card != null) {
-            playing_card.draw(g2);
+        if (playingCard != null) {
+            playingCard.draw(g2);
         }
 
         // Draw buffer to screen

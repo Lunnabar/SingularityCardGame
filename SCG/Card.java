@@ -25,4 +25,12 @@ public class Card extends Rectangle2D.Double{
     public void setTo(int position){
         setFrame(position,6*width,width/2, width*2/3);
     }
+
+    // Method to draw the card when called
+    public void draw(Graphics2D g2) {
+        g2.setColor(Color.WHITE);
+        g2.fill(this);
+        g2.setColor(Color.BLACK);
+        g2.draw(this);
+    }
 }
