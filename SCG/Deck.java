@@ -10,13 +10,13 @@ import java.awt.geom.Rectangle2D;
 
 
 public class Deck extends Rectangle2D.Double {
-	private ArrayList<Card> deck;
+	public ArrayList<Card> deck = new ArrayList<Card>();
 	private int index;
 	private int width;
 
 // Init
 	public Deck(int index, int width) {
-    	super(index * width, 0, width, width);
+    	super((index%8) * width, (index/8)*width, width, width);
     	deck = new ArrayList<Card>();
         this.index = index;
         this.width = width;

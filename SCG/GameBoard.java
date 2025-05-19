@@ -264,7 +264,6 @@ private class CardMouseListener implements MouseListener, MouseMotionListener{
      * plays the game.
     */
     public static void main(String[] args) {
-        GameBoard f = new GameBoard (12, 5);
     }
 
 }

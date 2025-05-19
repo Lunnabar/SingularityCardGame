@@ -38,6 +38,18 @@ public class BitboardADT {
         return board;
     }
 
+    public int[] coords(){
+        // returns coords for 1 value boards
+        long square = board;
+        int index = 0;
+        while(square > 1){
+            square = square/2;
+            index +=1;
+        }
+        int[] coords = {index/8, index%8};
+        return coords;
+    }
+
     public void getByte(){
         // Returns visual representation
         long temp = board;
@@ -49,9 +61,10 @@ public class BitboardADT {
             temp = temp/2;
         }
     }
-    
+
     public static void main(String[] args) {
-        BitboardADT board = new BitboardADT(12);
+        BitboardADT board = new BitboardADT(1);
+        System.out.println(board.coords()[1]);
 
         Scanner userInput = new Scanner(System.in);
         String input = "";
