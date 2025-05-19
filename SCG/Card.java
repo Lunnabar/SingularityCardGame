@@ -21,4 +21,8 @@ public class Card extends Rectangle2D.Double{
         setFrame(column*width+ width/4,row*width+ width*5/6, width/2, width*2/3);
         board.repaint();
     }
+
+    public void setTo(int position){
+        setFrame(position,6*width,width/2, width*2/3);
+    }
 }
