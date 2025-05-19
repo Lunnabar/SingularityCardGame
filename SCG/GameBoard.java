@@ -72,7 +72,7 @@ public class GameBoard extends JFrame{
     public static final Color PLAYING_COLOR = Color.GREEN;
     public static final Color CARD_COLOR = Color.RED;
     public static final int DISPLAY_WIDTH = SQUARE_SIZE * 8;
-    public static final int DISPLAY_LENGTH = SQUARE_SIZE * 5;
+    public static final int DISPLAY_LENGTH = SQUARE_SIZE * 6;
 
     // Render the rows of squares and map out the board
     private ArrayList<BoardSquare> squares = new ArrayList<>();
@@ -86,6 +86,9 @@ public class GameBoard extends JFrame{
     // Create users to complete code
     public User Player1 = new User();
     public User Player2 = new User();
+    public User Current_User = Player1;
+    public Hand player_hand;
+
 
 
     // Buffered image creation
@@ -106,6 +109,7 @@ public class GameBoard extends JFrame{
     }
 
     private void initSquares() {
+        // initiallizes board
         for (int i = 0; i < 40; i++) {
             if(i == 0 || i == 7 || i == 15 || i == 8 || i == 16 || i == 18 || i == 22 || i == 32 || i == 24 || i == 31 || i == 39){
                 BoardSquare deck = new Deck(i, SQUARE_SIZE);
@@ -122,6 +126,25 @@ public class GameBoard extends JFrame{
                 squares.add(square);
             }
         }
+
+        //initalizes Users
+        Player1.User_hand = new ArrayList<Card>();
+        Player1.Player_Deck = Player1_Deck;
+        Player1.Resource = Player1_Resource;
+        Player1.SpellTrap = Player1_SpellTrap;
+        Player1.Monster = Player1_Monster;
+        Player1.Graveyard = Player1_Graveyard;
+        Player1.Banishment = Player1_Banishment;
+
+        Player2.User_hand = new ArrayList<Card>();
+        Player2.Player_Deck = Player2_Deck;
+        Player2.Resource = Player2_Resource;
+        Player2.SpellTrap = Player2_SpellTrap;
+        Player2.Monster = Player2_Monster;
+        Player2.Graveyard = Player2_Graveyard;
+        Player2.Banishment = Player2_Banishment;
+
+        player_hand = new Hand(Current_User.User_hand, SQUARE_SIZE);
 
         // Lets start by having a card on Player1's Deck that can be moved
         Card sampleCard = new Card(this, SQUARE_SIZE);
@@ -151,17 +174,67 @@ public class GameBoard extends JFrame{
         return -1;
     }
 
-    private boolean isValidCardDrop(int x, int y) {
+    private boolean isValidCardDrop(int x, int y, User player) {
         int index = getCardSquareIndex(x, y);
+
+        if(player_hand.contains(x,y)){
+            return true;
+        }
 
         if (index == -1){
             return false;
         }
 
+        // can't have multiple squares in one tile
+        if(squares.get(index).isOccupied()){
+            return false;
+        }
+
+
+        // checks the bitboards to see if board space is playable
         BitboardADT CardDrop = new BitboardADT(0);
         CardDrop.setPosition(index / 8, index % 8);
 
-        return !squares.get(index).isOccupied();
+        if((CardDrop.get() & player.Player_Deck.get()) >0){
+            return true;
+        }
+        if((CardDrop.get() & player.Resource.get()) >0){
+            return true;
+        }
+        if((CardDrop.get() & player.SpellTrap.get()) > 0){
+            return true;
+        }
+        if((CardDrop.get() & player.Monster.get()) > 0){
+            return true;
+        }
+        if((CardDrop.get() & player.Graveyard.get()) > 0){
+            return true;
+        }
+        if((CardDrop.get() & player.Banishment.get()) > 0){
+            return true;
+        }
+        if((CardDrop.get() & Poker_Deck.get()) > 0){
+            return true;
+        }
+        if((CardDrop.get() & Poker_Zone.get()) > 0){
+            return true;
+        }
+        if((CardDrop.get() & Uno_Zone.get()) > 0){
+            return true;
+        }
+
+        // special case for extra monster zone
+        if((CardDrop.get() & ExtraMonster_Zone.get()) > 0){
+            if((player.Monster.get() & ExtraMonster_Zone.get()) > 0){
+                return false;
+            }
+            else{
+                player.Monster = new BitboardADT(player.Monster.get() | CardDrop.get());
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Class to respond to mouse events
@@ -170,9 +243,24 @@ public class GameBoard extends JFrame{
         public void mousePressed(MouseEvent event) {
             int x = event.getX();
             int y = event.getY();
+
+            if(player_hand.contains(x,y)){
+            playingCard = player_hand.getCard();
+            Current_User.User_hand = player_hand.hand;
+            originIndex = -2;
+            }
+
             int index = getCardSquareIndex(x, y);
             if(index != -1 && squares.get(index).isOccupied()) {
                 //System.out.println("is boardZones");
+
+                // Extra case for extra monster zone
+                BitboardADT CardZone = new BitboardADT(0);
+                CardZone.setPosition(index / 8, index % 8);
+                if((CardZone.get() & ExtraMonster_Zone.get()) > 0){
+                    Current_User.Monster.clearPosition(index / 8, index%8);
+                }
+
                 playingCard = squares.get(index).release();
                 originIndex = index;
                 playingCard.moveTo(x, y);
@@ -182,6 +270,16 @@ public class GameBoard extends JFrame{
                 playingCard = squares.get(index).release();
                 originIndex = index;
                 playingCard.moveTo(x, y);
+            }
+            if(index == 23){
+                Current_User.User_hand = player_hand.hand;
+                if(Current_User == Player1){
+                    Current_User = Player2;
+                }
+                if(Current_User == Player2){
+                    Current_User = Player1;
+                }
+                player_hand = new Hand(Current_User.User_hand, SQUARE_SIZE);
             }
             else {
                 playingCard = null;
@@ -197,13 +295,18 @@ public class GameBoard extends JFrame{
 
             int x = event.getX();
             int y = event.getY();
-            if (isValidCardDrop(x, y)) {
+            if (isValidCardDrop(x, y, Current_User)) {
                 int index = getCardSquareIndex(x, y);
                 squares.get(index).setCard(playingCard);
             }
-            else if (originIndex != -1) {
+            else if (originIndex > -1) {
                 // Return card to the original square
                 squares.get(originIndex).setCard(playingCard);
+            }
+            else if(originIndex == -2){
+                Current_User.User_hand = player_hand.hand;
+                Current_User.User_hand.add(playingCard);
+                player_hand = new Hand(Current_User.User_hand, SQUARE_SIZE);
             }
             playingCard = null;
             originIndex = -1;
@@ -230,7 +333,7 @@ public class GameBoard extends JFrame{
 
         // Clear background
         g2.setColor(BACKGROUND_COLOR);
-        g2.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_LENGTH + SQUARE_SIZE);
+        g2.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_LENGTH);
 
 
         // Making it clear where zones are and color coding them

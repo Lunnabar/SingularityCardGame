@@ -8,7 +8,7 @@ import java.util.Scanner;
 // Creating a player card
 
 public class Hand extends Rectangle2D.Double {
-	private ArrayList<Card> hand;
+	public ArrayList<Card> hand;
 	private BitboardADT index;
 	private int width;
 

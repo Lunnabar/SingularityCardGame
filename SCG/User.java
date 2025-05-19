@@ -8,9 +8,9 @@ public class User{
     public BitboardADT SpellTrap;
     public BitboardADT Monster;
     public BitboardADT Graveyard;
-    public BitboardADT Banishmemt;
+    public BitboardADT Banishment;
     public int LifePoints = 8000;
     public int PokerChips = 1000;
-    public ArrayList<Card> hand;
+    public ArrayList<Card> User_hand;
 
 }
