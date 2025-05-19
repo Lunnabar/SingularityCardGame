@@ -26,7 +26,7 @@ public class BoardSquare extends Rectangle2D.Double {
 // Sets card in square
     public void setCard(Card play) {
         card = play;
-        card.moveTo(index%8,index/8);
+        card.moveTo((index%8)*width + width/2,(index/8)*width-width/2);
     }
 
 // Removes card from square
@@ -39,5 +39,10 @@ public class BoardSquare extends Rectangle2D.Double {
 // Tells what card is in the square
     public Card getCard() {
         return card;
+    }
+
+// Checks if is deck
+    public boolean isDeck(){
+        return false;
     }
 }

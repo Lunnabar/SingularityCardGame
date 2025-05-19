@@ -14,14 +14,14 @@ public class Card extends Rectangle2D.Double{
     }
 
     // inits card in row and column position
-    public Card(JFrame Gameboard, int width, int row, int column) {
-        super(column*width+ width/4,row*width+ width*5/6, width/2, width*2/3);
+    public Card(JFrame Gameboard, int width,int x, int y) {
+        super(x- width/4,y + width*1/3, width/2, width*2/3);
         board = Gameboard;
     }
 
-    // moves card to row and column position
-    public void moveTo(int row, int column) {
-        setFrame(column*width+ width/4,row*width+ width*5/6, width/2, width*2/3);
+    // moves card
+    public void moveTo(int x, int y) {
+        setFrame(x- width/4,y + width*1/3, width/2, width*2/3);
         board.repaint();
     }
 

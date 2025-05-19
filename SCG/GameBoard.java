@@ -69,6 +69,7 @@ public class GameBoard extends JFrame{
     public static final int   CARD_SIZE = SQUARE_SIZE;
     public static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY;
     public static final Color BOUNDARY_COLOR = Color.BLACK;
+    public static final Color PLAYING_COLOR = Color.GREEN;
     public static final Color CARD_COLOR = Color.RED;
     public static final int DISPLAY_WIDTH = SQUARE_SIZE * 8;
     public static final int DISPLAY_LENGTH = SQUARE_SIZE * 5;
@@ -85,6 +86,7 @@ public class GameBoard extends JFrame{
     // Create users to complete code
     public User Player1 = new User();
     public User Player2 = new User();
+
 
     // Buffered image creation
     public BufferedImage bf = new BufferedImage(DISPLAY_WIDTH, DISPLAY_LENGTH, BufferedImage.TYPE_INT_RGB);
@@ -106,7 +108,7 @@ public class GameBoard extends JFrame{
     private void initSquares() {
         for (int i = 0; i < 40; i++) {
             if(i == 0 || i == 7 || i == 15 || i == 8 || i == 16 || i == 18 || i == 22 || i == 32 || i == 24 || i == 31 || i == 39){
-                Deck deck = new Deck(i, SQUARE_SIZE);
+                BoardSquare deck = new Deck(i, SQUARE_SIZE);
                 for(int j = 0; j < 75; j++){
                     Card card = new Card(this, CARD_SIZE);
                     deck.setCard(card);
@@ -114,7 +116,10 @@ public class GameBoard extends JFrame{
                 squares.add(deck);
             }
             else{
-                squares.add(new BoardSquare(i, SQUARE_SIZE));
+                BoardSquare square = new BoardSquare(i, SQUARE_SIZE);
+                Card card = new Card(this, CARD_SIZE);
+                square.setCard(card);
+                squares.add(square);
             }
         }
 
@@ -148,9 +153,14 @@ public class GameBoard extends JFrame{
 
     private boolean isValidCardDrop(int x, int y) {
         int index = getCardSquareIndex(x, y);
+
         if (index == -1){
             return false;
         }
+
+        BitboardADT CardDrop = new BitboardADT(0);
+        CardDrop.setPosition(index / 8, index % 8);
+
         return !squares.get(index).isOccupied();
     }
 
@@ -161,7 +171,14 @@ public class GameBoard extends JFrame{
             int x = event.getX();
             int y = event.getY();
             int index = getCardSquareIndex(x, y);
-            if (index != -1 && squares.get(index).isOccupied()) {
+            if(index != -1 && squares.get(index).isOccupied()) {
+                //System.out.println("is boardZones");
+                playingCard = squares.get(index).release();
+                originIndex = index;
+                playingCard.moveTo(x, y);
+            }
+            if(index != -1 && squares.get(index).isDeck()) {
+                //System.out.println("is deck");
                 playingCard = squares.get(index).release();
                 originIndex = index;
                 playingCard.moveTo(x, y);
@@ -213,7 +230,7 @@ public class GameBoard extends JFrame{
 
         // Clear background
         g2.setColor(BACKGROUND_COLOR);
-        g2.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_LENGTH);
+        g2.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_LENGTH + SQUARE_SIZE);
 
 
         // Making it clear where zones are and color coding them
@@ -254,16 +271,26 @@ public class GameBoard extends JFrame{
 
         // Draw dragged card on top
         if (playingCard != null) {
-            g2.draw(playingCard);
+            g2.setColor(PLAYING_COLOR);
+            g2.fill(playingCard);
+        }
+
+        for (int i = 0; i < squares.size(); i++) {
+            g2.setColor(PLAYING_COLOR);
+            if (squares.get(i).isOccupied()) {
+                //System.out.println("colored");
+                g2.fill(squares.get(i).getCard());
+            }
         }
 
         // Draw buffer to screen
         g.drawImage(bf, 0, 0, null);
-        g2.dispose();
     }
     
     public static void main(String[] args) {
+
         GameBoard f = new GameBoard();
+
     }
 }
 
