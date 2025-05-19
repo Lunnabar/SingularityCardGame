@@ -23,12 +23,12 @@ public class GameBoard extends JFrame{
     // Uno play zone            row 2, col 4
     // Community chest          row 2, col 6
 
-    // Player 1 deck:           row 4, col 0
-    // Player 1 resource zone:  row 3, col 0
-    // Player 1 spell/trap:     row 4, col 2-6
-    // Player 1 monster zone:   row 3, col 2-6
-    // Player 1 graveyard:      row 4, col 7
-    // Player 1 banishment:     row 3, col 7    
+    // Player 2 deck:           row 4, col 0
+    // Player 2 resource zone:  row 3, col 0
+    // Player 2 spell/trap:     row 4, col 2-6
+    // Player 2 monster zone:   row 3, col 2-6
+    // Player 2 graveyard:      row 4, col 7
+    // Player 2 banishment:     row 3, col 7    
 
     private BitboardADT Player1_Deck =          new BitboardADT(1);
     private BitboardADT Player1_Resource =      new BitboardADT(256);
@@ -63,20 +63,59 @@ public class GameBoard extends JFrame{
     public static final int DISPLAY_WIDTH = SQUARE_SIZE * 8;
     public static final int DISPLAY_LENGTH = SQUARE_SIZE * 5;
 
-    // Sets up board and the card in motion (only moving one card at a time)
-    public BitboardADT board;
-    public Card playing_card;
-    public User Player1;
-    public User Player2;
+    // Render the rows of squares and map out the board
+    private ArrayList<BoardSquare> squares = new ArrayList<>();
+    private Map<String, ArrayList<BoardSquare>> boardZones = new HashMap<>();
 
-    // Playing board render and mapping
+    // Sets up board and the card in motion
+    public BitboardADT board;
+    public Card playingCard = null;
+    public int originIndex = -1;
+
+    // Create users to complete code
+    public User Player1 = new User();
+    public User Player2 = new User();
+
+    // Buffered image creation
     public BufferedImage bf = new BufferedImage(DISPLAY_WIDTH, DISPLAY_LENGTH, BufferedImage.TYPE_INT_RGB);
-    private final Map<String, ArrayList<CardSquare>> boardZones = new HashMap<>();
 
     public GameBoard() {        
         setTitle("Welcome to the Singularity Game Board");
         setSize(DISPLAY_WIDTH, DISPLAY_LENGTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        initSquares();
+        labeledZones();
+
+        CardMouseListener listener = new CardMouseListener();
+        addMouseListener(listener);
+        addMouseMotionListener(listener);
+
+        setVisible(true);
+
+        private void initSquares() {
+            for (int i = 0; i < 40; i++) {
+                squares.add(new BoardSquare(i, SQUARE_SIZE));
+            }
+
+            // Lets start by having a card on Player1's Deck that can be moved
+            Card sampleCard = new Card();
+            squares.get(0).setCard(sampleCard);
+        }
+
+        private void labeledZones() {
+
+            // For Player 1
+            boardZones.put("Player1_Deck", new ArrayList<>());
+            boardZones.get("Player1_Deck").add(squares.get(0));
+
+
+            // For Player 2
+            boardZones.put("Player2_Deck", new ArrayList<>());
+            boardZones.get("Player2_Deck").add(squares.get(33));
+
+           
+        }
 
         // Initialize user objects
         this.Player1 = new User();
@@ -97,108 +136,105 @@ public class GameBoard extends JFrame{
         this.Player2.Graveyard = Player2_Graveyard;
         this.Player2.Banishment = Player2_Banishment;
 
-        CardMouseListener listener = new CardMouseListener();
-        addMouseListener(listener);
-        addMouseMotionListener(listener);
 
-        setVisible(true);
-        
-    }
-
-    private void initZones(){
-        
-    } 
-
-    public boolean gameIsOver(User current_player) {
-        // Game is over if the player has no life points
-        if (current_player.LifePoints <= 0) {
-            return true;
-        }
-
-        // Game is over if the player has no poker chips
-        if (current_player.PokerChips <= 0) {
-            return true;
-        }
-
-        // Game is over if the player's deck is empty, check if the bitboard spot is active
-        if (current_player.Player_Deck.get() == 0L) {
-            return true;
-        }
-
-        // Otherwise, the game is not over
-        return false;
-    }
-
-    // Class to respond to mouse events
-    private class CardMouseListener implements MouseListener, MouseMotionListener{
-        
-        private int origin; // the index of the square when a Card is picked up
-        
-        public void mousePressed(MouseEvent event) {
-            int newX = event.getX();
-            int newY = event.getY();
-            
-            if (clickedOnCard(newX, newY)) {
-                int squareIndex = getCardSquareIndex(newX, newY);
-                playing_card = board.get(squareIndex).release();
-                playing_card.moveTo(newX, newY);
-                origin = squareIndex;   
-            } 
-            else {
-                playing_card = null;
+        private int getCardSquareIndex(int x, int y) {
+            for (int i = 0; i < squares.size(), i++) {
+                if (squares.get(i).contains(x,y)) {
+                    return i;
+                }
             }
-        }
-
-        private boolean clickedOnCard(int x, int y) {
-            return board.get(getCardSquareIndex(x,y)).isOccupied(); 
-        }
-
-        private boolean clickedOnDeck(int x, int y) {
-            return board.get(getCardSquareIndex(x,y)).isDeck(); 
+            return -1;
         }
 
         private boolean isValidCardDrop(int x, int y) {
-           // NEEDS TO BE UPDATED TO DETERMINE IF IN PLAYERS AREA
+           int index = getCardSquareIndex(x,y)
+           if (index == -1){
+            return false;
+           }
+           return !squares.get(index).isOccupied();
         }
+
+        // Class to respond to mouse events
+        private class CardMouseListener implements MouseListener, MouseMotionListener {
         
-        /**
-         * Method mouseReleased is called when the mouse
-         * button is released.
-         * 
-         * If a Card is released in a square, and that square
-         * is not already occupied and the move satisfies
-         * the rules of the game, then the Card is placed
-         * into the square. Otherwise, the Card is returned
-         * to its original square. 
-         */
-        public void mouseReleased(MouseEvent event) {
-            int newX = event.getX();
-            int newY = event.getY();
-                        
-            if (isValidCardDrop(newX, newY)) {
-                int squareIndex = getCardSquareIndex(newX, newY);
-                board.get(squareIndex).setCard(playing_card);
+            public void mousePressed(MouseEvent event) {
+                int x = event.getX();
+                int y = event.getY();
+                int index = getCardSquareIndex(x, y);
+                if (index != -1 && squares.get(index).isOccupied()) {
+                    playingCard = squares.get(index).release();
+                    originIndex = index;
+                    playingCard.moveTo(x, y);
+                }
+                else {
+                    playingCard = null;
+                    originIndex = -1;
+                }
+                repaint();
             }
 
-            // Give up the Card, if any, that was dragged; has been moved to some square
-            playing_card = null;
-        }
+            public void mouseReleased(MouseEvent event) {
+                if (playingCard == null){
+                    return;
+                }
 
-        public void mouseDragged(MouseEvent event) {
-            if (playing_card != null){
-                playing_card.moveTo(event.getX(), event.getY());
+                int x = event.getX();
+                int y = event.getY();
+                if (isValidCardDrop(x, y)) {
+                    int index = getCardSquareIndex(x, y);
+                    squares.get(index).setCard(playingCard);
+                }
+                else if (originIndex != -1) {
+                    // Return card to the original square
+                    squares.get(originIndex).setCard(playingCard);
+                }
+                playingCard = null;
+                originIndex = -1;
+                repaint();
             }
-            repaint();
+
+            public void mouseDragged(MouseEvent event) {
+                if (playingCard != null){
+                    playingCard.moveTo(event.getX(), event.getY());
+                }
+                repaint();
+            }
         }
 
-        
         // Methods are required by the interfaces
         public void mouseClicked(MouseEvent event) {}
         public void mouseEntered(MouseEvent event) {}
         public void mouseExited(MouseEvent event) {}
         public void mouseMoved(MouseEvent event) {}
-    
+    }
 
+    @Override
+    public void paint(Graphics g) {
+        Graphics2D g2 = bf.createGraphics();
+
+        // Clear background
+        g2.setColor(BACKGROUND_COLOR);
+        g2.fillRect(0, 0, DISPLAY_WIDTH, DISPLAY_LENGTH);
+
+        // Draw squares
+        for (BoardSquare s : squares) {
+            g2.setColor(BOUNDARY_COLOR);
+            g2.draw(s);
+            if (s.isOccupied()) {
+                s.getCard().draw(g2);
+            }
+        }
+
+        // Draw dragged card on top
+        if (playing_card != null) {
+            playing_card.draw(g2);
+        }
+
+        // Draw buffer to screen
+        g.drawImage(bf, 0, 0, null);
+        g2.dispose();
+    }
+    
     public static void main(String[] args) {
         GameBoard f = new GameBoard();
     }
