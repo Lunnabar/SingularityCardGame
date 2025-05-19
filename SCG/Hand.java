@@ -14,20 +14,22 @@ public class Hand extends Rectangle2D.Double {
 
 // Init
 	public Hand(ArrayList<Card> hand,int width) {
+		// sets up an area above the gameboard for hand
     	super(0, 0, 8*width, width);
         this.hand = hand;
         this.width = width;
         int stretch = width;
 
+        // if too many cards, squeezes the cards to fit the hand space
         if(hand.size() > 16){
         	stretch = stretch*16/hand.size();
         }
-
         for(int i = 0; i < hand.size(); i++){
         	hand.get(i).setTo(stretch*i);
         }
     }
 
+    // gets card from the hand
     public Card getCard(){
     	Scanner userInput = new Scanner(System.in);
     	System.out.println("\nWhich card to play?");

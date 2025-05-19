@@ -66,7 +66,7 @@ public class GameBoard extends JFrame{
 
 
     public static final int   SQUARE_SIZE = 120;
-    public static final int   CARD_SIZE = SQUARE_SIZE / 2;
+    public static final int   CARD_SIZE = SQUARE_SIZE;
     public static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY;
     public static final Color BOUNDARY_COLOR = Color.BLACK;
     public static final Color CARD_COLOR = Color.RED;
@@ -110,16 +110,18 @@ public class GameBoard extends JFrame{
         }
 
         // Lets start by having a card on Player1's Deck that can be moved
-        Card sampleCard = new Card();
+        Card sampleCard = new Card(this, SQUARE_SIZE);
         squares.get(0).setCard(sampleCard);
     }
 
     // Helper method to create zone lists where index is and apply color
     private ArrayList<BoardSquare> setZone(List<Integer> indices, Color color) {
         ArrayList<BoardSquare> zone = new ArrayList<>();
+        Graphics2D g2 = (Graphics2D) bf.getGraphics();
+        g2.setPaint(color);
         for (int index : indices) {
             BoardSquare square = squares.get(index);
-            square.setZoneColor(color);
+            g2.fill(square);
             zone.add(square);
         }
         return zone;
@@ -236,13 +238,13 @@ public class GameBoard extends JFrame{
             g2.setColor(BOUNDARY_COLOR);
             g2.draw(s);
             if (s.isOccupied()) {
-                s.getCard().draw(g2);
+                g2.draw(s.getCard());
             }
         }
 
         // Draw dragged card on top
         if (playingCard != null) {
-            playingCard.draw(g2);
+            g2.draw(playingCard);
         }
 
         // Draw buffer to screen

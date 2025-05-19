@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
 
 public class BoardSquare extends Rectangle2D.Double {
 	private Card card;
-	private BitboardADT index;
+	private int index;
 	private int width;
 
 // Init
@@ -26,7 +26,7 @@ public class BoardSquare extends Rectangle2D.Double {
 // Sets card in square
     public void setCard(Card play) {
         card = play;
-        card.moveTo((index%8)*width+ width/4,(index/8)*width+ width*5/6, width/2, width*2/3);
+        card.moveTo(index%8,index/8);
     }
 
 // Removes card from square

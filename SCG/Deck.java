@@ -20,20 +20,25 @@ public class Deck extends Rectangle2D.Double {
     	deck = new ArrayList<Card>();
         this.index = index;
         this.width = width;
+
     }
 
+    // checks if boardspace is Deck
     public boolean isDeck(){
     	return true;
     }
 
+    // checks if deck is empty
     public boolean isEmpty() {
         return deck.size() != 0;
     }
 
+    // moves card into the deck
     public void setCard(Card play) {
         deck.add(play);
     }
 
+    // draws a card from the deck
     public Card release() {
     	Random rand = new Random();
     	int index = rand.nextInt(deck.size());
