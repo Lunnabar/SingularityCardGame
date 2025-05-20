@@ -244,46 +244,48 @@ public class GameBoard extends JFrame{
             int x = event.getX();
             int y = event.getY();
 
-            if(player_hand.contains(x,y)){
-            playingCard = player_hand.getCard();
-            Current_User.User_hand = player_hand.hand;
-            originIndex = -2;
-            }
-
-            int index = getCardSquareIndex(x, y);
-            if(index != -1 && squares.get(index).isOccupied()) {
-                //System.out.println("is boardZones");
-
-                // Extra case for extra monster zone
-                BitboardADT CardZone = new BitboardADT(0);
-                CardZone.setPosition(index / 8, index % 8);
-                if((CardZone.get() & ExtraMonster_Zone.get()) > 0){
-                    Current_User.Monster.clearPosition(index / 8, index%8);
-                }
-
-                playingCard = squares.get(index).release();
-                originIndex = index;
-                playingCard.moveTo(x, y);
-            }
-            if(index != -1 && squares.get(index).isDeck()) {
-                //System.out.println("is deck");
-                playingCard = squares.get(index).release();
-                originIndex = index;
-                playingCard.moveTo(x, y);
-            }
-            if(index == 23){
+            if (player_hand.contains(x,y)) {
+                playingCard = player_hand.getCard();
                 Current_User.User_hand = player_hand.hand;
-                if(Current_User == Player1){
-                    Current_User = Player2;
-                }
-                if(Current_User == Player2){
-                    Current_User = Player1;
-                }
-                player_hand = new Hand(Current_User.User_hand, SQUARE_SIZE);
+                originIndex = -2;
             }
             else {
-                playingCard = null;
-                originIndex = -1;
+                int index = getCardSquareIndex(x, y);
+                
+                if (index != -1 && squares.get(index).isOccupied()) {
+                    //System.out.println("is boardZones");
+
+                    // Extra case for extra monster zone
+                    BitboardADT CardZone = new BitboardADT(0);
+                    CardZone.setPosition(index / 8, index % 8);
+                    if((CardZone.get() & ExtraMonster_Zone.get()) > 0){
+                        Current_User.Monster.clearPosition(index / 8, index%8);
+                    }
+                    playingCard = squares.get(index).release();
+                    originIndex = index;
+                    playingCard.moveTo(x, y);
+                }
+                else if(index != -1 && squares.get(index).isDeck()) {
+                    //System.out.println("is deck");
+                    playingCard = squares.get(index).release();
+                    originIndex = index;
+                    playingCard.moveTo(x, y);
+                }
+                else if (index == 23) {
+                    // End turn zone clicked
+                    Current_User.User_hand = player_hand.hand;
+                    if (Current_User == Player1){
+                        Current_User = Player2;
+                    }
+                    if(Current_User == Player2){
+                        Current_User = Player1;
+                    }
+                    player_hand = new Hand(Current_User.User_hand, SQUARE_SIZE);
+                }
+                else {
+                    playingCard = null;
+                    originIndex = -1;
+                }
             }
             repaint();
         }
@@ -316,8 +318,8 @@ public class GameBoard extends JFrame{
         public void mouseDragged(MouseEvent event) {
             if (playingCard != null){
                 playingCard.moveTo(event.getX(), event.getY());
+                repaint();
             }
-            repaint();
         }
 
         // Methods are required by the interfaces
@@ -329,6 +331,7 @@ public class GameBoard extends JFrame{
 
     @Override
     public void paint(Graphics g) {
+        super.paint(g);
         Graphics2D g2 = bf.createGraphics();
 
         // Clear background
