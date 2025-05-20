@@ -15,7 +15,7 @@ public class Hand extends Rectangle2D.Double {
 // Init
 	public Hand(ArrayList<Card> hand,int width) {
 		// sets up an area above the gameboard for hand
-    	super(0, 0, 8*width, width);
+    	super(0, 5*width, 8*width, width);
         this.hand = hand;
         this.width = width;
         int stretch = width;

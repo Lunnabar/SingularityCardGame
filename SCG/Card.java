@@ -27,7 +27,7 @@ public class Card extends Rectangle2D.Double{
 
     // sets card to postion in hand
     public void setTo(int position){
-        setFrame(position,6*width,width/2, width*2/3);
+        setFrame(position,5*width,width/2, width*2/3);
         board.repaint();
     }
 }

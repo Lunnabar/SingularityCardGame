@@ -381,7 +381,7 @@ public class GameBoard extends JFrame{
         for (int i = 0; i < squares.size(); i++) {
             g2.setColor(PLAYING_COLOR);
             if (squares.get(i).isOccupied()) {
-                //System.out.println("colored");
+                System.out.println("colored");
                 g2.fill(squares.get(i).getCard());
             }
         }
